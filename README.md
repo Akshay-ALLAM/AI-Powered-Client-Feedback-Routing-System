@@ -1,28 +1,24 @@
 # AI-Powered Client Feedback Routing System
 
-An n8n automation that reads client feedback from a Google Form, uses an AI model to analyze it (sentiment, risk level, root problem, suggested solution), and automatically routes it into organized Google Sheets — with a live dashboard summarizing everything.
+An n8n automation that pulls in client feedback from a Google Form, runs it through an AI model to figure out sentiment, risk, and next steps, and then sorts it automatically into Google Sheets — with a dashboard on top that updates itself.
 
-Built as a portfolio project to demonstrate no-code automation + AI integration skills.
+I built this as a portfolio project to show what I can do with no-code automation and AI integration.
 
-> **Note:** This is a practice/demo project. All company names, emails, and feedback shown are fictional ("Alladi" is a placeholder brand name, not a real client). Actual spreadsheet data has been excluded/blurred to avoid publishing anything resembling client information, even though it's fake.
+**Note:** This is a practice project, not a real client's work. Names, emails, and feedback are all made up ("Alladi" is just a placeholder brand name). I've also blurred/left out the actual spreadsheet rows in the screenshots below, just to be safe about not publishing anything that looks like real client data.
 
----
+## What problem does this solve?
 
-## 🧩 What Problem Does This Solve?
+If a company collects feedback through a Google Form, someone eventually has to read through it and figure out what matters. That's fine at first, but once you're getting dozens or hundreds of responses, it gets slow and inconsistent — one person might flag something as urgent, another might miss it entirely.
 
-Imagine a company collects customer feedback through a simple Google Form. On a small scale, someone can read every response by hand. But once you get dozens or hundreds of responses, that becomes slow and inconsistent — one person might rate a comment "urgent," another might not.
+This workflow handles that first pass automatically. When someone submits the form:
 
-This workflow automates that triage step. Every time someone submits the form:
+1. It picks up the new response right away, no manual checking needed.
+2. It looks at the star rating and sorts the feedback into positive or negative.
+3. It sends the comment to an AI model, which reads it like a junior analyst would — pulling out the sentiment, the actual problem, a suggested fix, how much risk there is of losing the client, and a priority level.
+4. It writes that analysis into the right sheet (positive or negative).
+5. A dashboard tab keeps a running total of everything, so you can see at a glance how things are trending without digging through individual rows.
 
-1. It **reads the new response** automatically (no manual checking).
-2. It **decides if it's positive or negative** feedback based on the star rating.
-3. It sends the feedback to an **AI model**, which acts like a junior analyst — it reads the comment and writes up the sentiment, the core problem, a suggested solution, a risk level (is this client about to leave?), and a priority.
-4. It **files the analysis** into the right spreadsheet tab (positive or negative).
-5. A **dashboard tab** automatically keeps running totals, so anyone can see at a glance how many clients are happy, how many are at risk, and what the average rating is — without opening a single row of raw data.
-
----
-
-## 🔁 How It Works (Architecture)
+## How it works
 
 ```
 Google Form
@@ -72,118 +68,104 @@ Dashboard tab (Google Apps Script)
     and average ratings — updated automatically
 ```
 
-**Plain-English summary:** the Switch node is like a mail sorter — it looks at the rating and decides which pile (positive or negative) the feedback belongs in. Each pile has its own AI "reader" that summarizes what happened and what to do about it. The results land in two separate spreadsheet tabs, and a third tab (the dashboard) just counts and averages what's in those two piles.
+Think of the Switch node as a mail sorter — it looks at the rating and decides which pile the feedback goes into. Each pile has its own AI "reader" that summarizes what happened and what to do about it. Both piles land in their own sheet, and a third tab just counts and averages what's in them.
 
----
-
-## 🛠️ Tech Stack
+## Tech stack
 
 | Tool | Role in this project |
 |---|---|
-| **n8n** | The automation platform that connects everything and runs the workflow |
-| **Google Forms** | Collects raw client feedback |
-| **Google Sheets** | Stores the raw responses, the positive/negative analysis, and the dashboard |
-| **Google Sheets API** (via n8n's Google Sheets node) | Lets n8n read new form rows and write AI results back |
-| **Mistral AI** (via n8n's Mistral Cloud Chat Model node) | The AI "brain" that reads each comment and writes the analysis |
-| **n8n Code node (JavaScript)** | Takes the AI's free-text answer and splits it into clean columns (Sentiment, Problem, Solution, Risk Level, Priority) using regex |
-| **Google Apps Script** | Powers the dashboard tab — counts totals, urgency buckets, and averages automatically whenever the sheet updates |
+| **n8n** | Connects everything and runs the workflow |
+| **Google Forms** | Collects the raw feedback |
+| **Google Sheets** | Stores the raw responses, the AI-analyzed data, and the dashboard |
+| **Google Sheets API** (via n8n's Google Sheets node) | Lets n8n read new form rows and write results back |
+| **Mistral AI** (via n8n's Mistral Cloud Chat Model node) | Reads each comment and writes the analysis |
+| **n8n Code node (JavaScript)** | Splits the AI's text answer into clean columns (Sentiment, Problem, Solution, Risk Level, Priority) using regex |
+| **Google Apps Script** | Runs the dashboard tab — totals, urgency buckets, averages, all automatic |
 
----
+## Screenshots
 
-## 📸 Screenshots
+**1. The n8n workflow canvas**
 
-### 1. The n8n Workflow Canvas
 ![n8n workflow canvas showing the full automation: a Google Sheets trigger feeds into a Switch node, which splits into two branches — a Positive Feedback AI Agent and a Negative Feedback AI Agent (each connected to a Mistral Cloud Chat Model and a Code node) — before appending results to separate Google Sheets tabs.](screenshots/workflow-canvas.png)
 
-*The full automation, end to end: a new form row triggers the workflow, the Switch node routes it by rating, and each branch runs its own AI analysis before writing results back to Google Sheets.*
+The full automation end to end: a new form row triggers it, the Switch node routes by rating, and each branch runs its own AI analysis before writing back to Google Sheets.
 
-### 2. Live Dashboard
+**2. Live dashboard**
+
 ![Google Sheets dashboard tab showing total feedback count, a breakdown by urgency (Urgent, Watch, Good), and average/lowest/highest ratings, all color-coded and updated automatically. Individual client data rows are blurred to protect privacy.](screenshots/dashboard.png)
 
-*The dashboard tab, generated by Google Apps Script, summarizes everything at a glance — no need to scroll through individual rows to know how the client base is feeling overall. (Client data blurred for privacy.)*
+The dashboard tab, built with Google Apps Script, sums everything up at a glance — no need to scroll through rows to know how things are going. (Client data blurred for privacy.)
 
----
+## Setup
 
-## 🚀 Setup Instructions
+You don't need to write code to get this running — just follow along.
 
-You don't need to write any code to run this — just follow these steps.
+**What you'll need:**
+- An n8n account (cloud or self-hosted) — [n8n.io](https://n8n.io)
+- A Google account with access to Sheets and Forms
+- A Mistral AI API key — [mistral.ai](https://mistral.ai)
 
-### What you'll need first
-- An **n8n** account (cloud or self-hosted) — [n8n.io](https://n8n.io)
-- A **Google account** with access to Google Sheets and Google Forms
-- A **Mistral AI API key** — you can get one at [mistral.ai](https://mistral.ai)
+**1. Set up your Google Sheet**
 
-### Step 1: Set up your Google Sheet
-1. Create a new Google Sheet.
-2. Create these tabs (exact names matter, since the workflow refers to them):
-   - `Form_Responses` — where your Google Form sends its answers
-   - `Positive Feedback` — where positive AI-analyzed rows will land
-   - `Negative Feedback` — where negative AI-analyzed rows will land
-   - `Dashboard` — the summary tab
-3. Copy your **Sheet ID** from the URL — it's the long string of letters/numbers between `/d/` and `/edit` in your sheet's URL.
+Create a new sheet with these tabs (names matter, since the workflow references them):
+- `Form_Responses` — where the form sends its answers
+- `Positive Feedback` — positive AI-analyzed rows land here
+- `Negative Feedback` — negative AI-analyzed rows land here
+- `Dashboard` — the summary tab
 
-### Step 2: Connect your Google Form to the sheet
-1. Create a Google Form with fields for email, rating, what they liked, and what could improve.
-2. Link the form's responses to the `Form_Responses` tab of your sheet (Forms → Responses → Google Sheets icon).
+Grab your Sheet ID from the URL — it's the long string between `/d/` and `/edit`.
 
-### Step 3: Import the workflow into n8n
-1. Open n8n and create a new workflow.
-2. Click the **"..."** menu (top right) → **Import from File**.
-3. Select `workflow.json` from this repo.
-4. The nodes will appear on the canvas, but they won't work yet — you still need to plug in your own credentials (next step).
+**2. Connect your form to the sheet**
 
-### Step 4: Add your credentials
-The imported workflow has placeholder values instead of real credentials, so nothing leaks. You'll need to replace:
+Make a Google Form with fields for email, rating, what they liked, and what could improve. Link its responses to the `Form_Responses` tab (Forms → Responses → Google Sheets icon).
 
-| Placeholder | What to replace it with |
+**3. Import the workflow into n8n**
+
+Open n8n, create a new workflow, click the "..." menu → Import from File, and select `workflow.json` from this repo. The nodes will show up but won't run yet — you still need your own credentials.
+
+**4. Add your credentials**
+
+The workflow ships with placeholders instead of real credentials. Swap in:
+
+| Placeholder | Replace with |
 |---|---|
-| `YOUR_GOOGLE_SHEET_ID_HERE` | Your own Google Sheet ID from Step 1 |
-| Google Sheets credential (shows as disconnected) | Your own Google account, connected via n8n's credential manager |
-| Mistral Cloud Chat Model credential (shows as disconnected) | Your own Mistral API key, connected via n8n's credential manager |
+| `YOUR_GOOGLE_SHEET_ID_HERE` | Your Sheet ID from step 1 |
+| Google Sheets credential | Your own Google account, connected via n8n's credential manager |
+| Mistral Cloud Chat Model credential | Your own Mistral API key |
 
-To connect credentials in n8n: click on a node → click the credential dropdown → **Create New Credential** → paste in your API key or sign in with Google.
+To connect a credential: click the node → click the credential dropdown → Create New Credential → sign in or paste your key.
 
-### Step 5: Set up the dashboard script
-1. In your Google Sheet, go to **Extensions → Apps Script**.
-2. Paste in the script from `apps-script/dashboard.gs` (included in this repo).
-3. Save, then run it once manually to authorize it.
-4. (Optional) Set up a time-based trigger in Apps Script so the dashboard refreshes automatically every few minutes.
+**5. Set up the dashboard script**
 
-### Step 6: Test it
-1. Submit a test response through your Google Form.
-2. In n8n, click **Execute workflow** (or activate the workflow so it runs automatically).
-3. Check your `Positive Feedback` or `Negative Feedback` tab — you should see a new row with the AI's analysis.
-4. Check the `Dashboard` tab — the totals should update.
+In your sheet, go to Extensions → Apps Script, paste in the code from `apps-script/dashboard.gs`, save, and run it once to authorize. Optionally set up a time-based trigger so it refreshes on its own.
 
----
+**6. Test it**
 
-## 📁 Repo Structure
+Submit a test response through the form, run the workflow in n8n, and check that a new row shows up in the right sheet with the AI's analysis — then check that the dashboard totals updated.
+
+## Repo structure
 
 ```
 ai-feedback-routing-system/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
-├── workflow.json                  ← the exported, credential-free n8n workflow
+├── workflow.json          ← exported, credential-free n8n workflow
 ├── apps-script/
-│   └── dashboard.gs                ← Google Apps Script code for the dashboard tab
+│   └── dashboard.gs        ← Apps Script code for the dashboard tab
 └── screenshots/
     ├── workflow-canvas.png
     └── dashboard.png
 ```
 
----
+## What this project shows
 
-## 💡 What This Project Demonstrates
+- Building a multi-branch automation with conditional logic
+- Wiring an LLM (Mistral) into a real workflow, not just a chatbot
+- Turning unstructured AI output into structured spreadsheet data
+- Building a simple reporting layer on top of automated data
+- Basic privacy hygiene — scrubbing credentials, using placeholders, and keeping real-looking data out of public screenshots
 
-- Building a multi-branch automation with conditional logic (Switch node)
-- Integrating an LLM (Mistral) into a real workflow, not just a chatbot demo
-- Parsing unstructured AI output into structured spreadsheet data
-- Designing a lightweight reporting layer (dashboard) on top of automated data
-- Thinking about security/privacy basics (scrubbing credentials, using placeholders, blurring/excluding any data that resembles client information) before publishing work publicly
+## License
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
