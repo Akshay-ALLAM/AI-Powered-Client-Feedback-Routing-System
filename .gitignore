@@ -1,0 +1,41 @@
+# --- Credentials & secrets ---
+# Never commit real API keys, tokens, or credential exports
+*.env
+.env.*
+credentials.json
+credentials/
+*.credentials.json
+n8n-credentials*.json
+
+# --- n8n local runtime files ---
+# If you ever run n8n locally, these folders hold local databases,
+# binary data, and logs that shouldn't be shared publicly
+.n8n/
+n8n-data/
+*.sqlite
+*.sqlite3
+logs/
+*.log
+
+# --- Google API secrets ---
+client_secret*.json
+service-account*.json
+*.pem
+*.key
+
+# --- OS / editor junk ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- Node / local dependencies (only relevant if you add custom nodes/scripts) ---
+node_modules/
+npm-debug.log
+package-lock.json
+
+# --- Temporary / working files ---
+*.tmp
+*.bak
+~$*
