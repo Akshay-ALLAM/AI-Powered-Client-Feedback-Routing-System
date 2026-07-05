@@ -1,6 +1,6 @@
 # AI-Powered Client Feedback Routing System
 
-An n8n automation that pulls in client feedback from a Google Form, runs it through an AI model to figure out sentiment, risk, and next steps, and then sorts it automatically into Google Sheets — with a dashboard on top that updates itself.
+An n8n automation that pulls in client feedback from a Google Form, runs it through an AI model to figure out sentiment, risk, and next steps, and then sorts it automatically into Google Sheets  with a dashboard on top that updates itself.
 
 I built this as a portfolio project to show what I can do with no-code automation and AI integration.
 
