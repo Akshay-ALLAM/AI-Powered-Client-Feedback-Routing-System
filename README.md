@@ -4,6 +4,17 @@ An n8n automation that pulls in client feedback from a Google Form, runs it thro
 
 > Built with **n8n · Google Forms · Google Sheets · Mistral AI · Google Apps Script**
 
+## Project Assets
+
+- [Setup guide](docs/SETUP.md) - step-by-step rebuild instructions
+- [Workflow export checklist](docs/WORKFLOW_EXPORT_CHECKLIST.md) - how to safely publish a scrubbed n8n export
+- [Sample form responses](sample-data/form_responses.csv) - fabricated input data
+- [Sample analyzed output](sample-data/analyzed_feedback.csv) - fabricated AI-enriched rows
+- [Dashboard Apps Script](apps-script/dashboard.gs) - Google Sheets dashboard builder
+- [Screenshots](screenshots/) - workflow canvas and dashboard preview
+
+> **Workflow note:** the public repo is structured for a safe portfolio release. Add your real exported `workflow.json` only after scrubbing Sheet IDs, credential IDs, webhook URLs, and instance IDs using the checklist in `docs/WORKFLOW_EXPORT_CHECKLIST.md`.
+
 ---
 
 ## Who This Works For
@@ -219,9 +230,11 @@ Grab your Sheet ID from the URL — it's the long string between `/d/` and `/edi
 
 Create a Google Form with fields for name, email, star rating, what they liked, and what could improve. Link it to the `Form_Responses` tab (Forms → Responses → Google Sheets icon).
 
-### Step 3 — Import the Workflow
+### Step 3 — Build or Import the Workflow
 
-Open n8n → create a new workflow → click the `...` menu → **Import from File** → select `workflow.json`. The nodes will appear but won't run until you add credentials.
+Use the flow in [docs/SETUP.md](docs/SETUP.md) to recreate the workflow in n8n. If you already have a real n8n export, scrub it with [docs/WORKFLOW_EXPORT_CHECKLIST.md](docs/WORKFLOW_EXPORT_CHECKLIST.md), save it as `workflow.json`, and then import it into n8n.
+
+Open n8n → create a new workflow → click the `...` menu → **Import from File** → select the scrubbed `workflow.json`. The nodes will appear but won't run until you add credentials.
 
 ### Step 4 — Add Your Credentials
 
@@ -259,21 +272,30 @@ ai-feedback-routing-system/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
-├── workflow.json             ← credential-free n8n workflow
 ├── apps-script/
 │   └── dashboard.gs          ← Apps Script for the dashboard tab
+├── docs/
+│   ├── SETUP.md              ← Rebuild instructions
+│   └── WORKFLOW_EXPORT_CHECKLIST.md
+├── sample-data/
+│   ├── form_responses.csv    ← Fake raw form inputs
+│   └── analyzed_feedback.csv ← Fake AI-analyzed outputs
 └── screenshots/
     ├── workflow-canvas.png
     └── dashboard.png
+
+Optional:
+
+└── workflow.json             ← Add only after scrubbing real IDs and credentials
 ```
 
 ---
 
 ## Security & Credential Hygiene
 
-This repo is safe to make public. Before publishing:
+This repo is safe to make public. Before publishing a real workflow export:
 
-- Every credential ID, Sheet ID, and instance ID in `workflow.json` was replaced with a `YOUR_...` placeholder — no OAuth tokens, API keys, or real IDs are committed.
+- Every credential ID, Sheet ID, webhook URL, and instance ID in `workflow.json` should be replaced with a `YOUR_...` placeholder — no OAuth tokens, API keys, or real IDs should be committed.
 - All names, emails, and feedback in the screenshots and sample data are fabricated.
 - `.gitignore` excludes local env files and any exported workflow that might still contain real credentials, so you don't accidentally commit a live copy.
 
