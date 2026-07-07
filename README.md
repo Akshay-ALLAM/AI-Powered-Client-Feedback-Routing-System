@@ -7,13 +7,14 @@ An n8n automation that pulls in client feedback from a Google Form, runs it thro
 ## Project Assets
 
 - [Setup guide](docs/SETUP.md) - step-by-step rebuild instructions
+- [n8n workflow export](workflow.json) - credential-free workflow template
 - [Workflow export checklist](docs/WORKFLOW_EXPORT_CHECKLIST.md) - how to safely publish a scrubbed n8n export
 - [Sample form responses](sample-data/form_responses.csv) - fabricated input data
 - [Sample analyzed output](sample-data/analyzed_feedback.csv) - fabricated AI-enriched rows
 - [Dashboard Apps Script](apps-script/dashboard.gs) - Google Sheets dashboard builder
 - [Screenshots](screenshots/) - workflow canvas and dashboard preview
 
-> **Workflow note:** the public repo is structured for a safe portfolio release. Add your real exported `workflow.json` only after scrubbing Sheet IDs, credential IDs, webhook URLs, and instance IDs using the checklist in `docs/WORKFLOW_EXPORT_CHECKLIST.md`.
+> **Workflow note:** `workflow.json` is a scrubbed public export. Replace the `YOUR_...` placeholders with your own Sheet ID, tab ID, and credentials inside n8n after importing.
 
 ---
 
@@ -232,7 +233,7 @@ Create a Google Form with fields for name, email, star rating, what they liked, 
 
 ### Step 3 — Build or Import the Workflow
 
-Use the flow in [docs/SETUP.md](docs/SETUP.md) to recreate the workflow in n8n. If you already have a real n8n export, scrub it with [docs/WORKFLOW_EXPORT_CHECKLIST.md](docs/WORKFLOW_EXPORT_CHECKLIST.md), save it as `workflow.json`, and then import it into n8n.
+Use the included `workflow.json` file, or rebuild the flow manually from [docs/SETUP.md](docs/SETUP.md). If you export your own workflow later, scrub it with [docs/WORKFLOW_EXPORT_CHECKLIST.md](docs/WORKFLOW_EXPORT_CHECKLIST.md) before replacing the public file.
 
 Open n8n → create a new workflow → click the `...` menu → **Import from File** → select the scrubbed `workflow.json`. The nodes will appear but won't run until you add credentials.
 
@@ -272,6 +273,7 @@ ai-feedback-routing-system/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
+├── workflow.json             ← Credential-free n8n workflow export
 ├── apps-script/
 │   └── dashboard.gs          ← Apps Script for the dashboard tab
 ├── docs/
@@ -283,17 +285,13 @@ ai-feedback-routing-system/
 └── screenshots/
     ├── workflow-canvas.png
     └── dashboard.png
-
-Optional:
-
-└── workflow.json             ← Add only after scrubbing real IDs and credentials
 ```
 
 ---
 
 ## Security & Credential Hygiene
 
-This repo is safe to make public. Before publishing a real workflow export:
+This repo is safe to make public. The included `workflow.json` uses placeholders instead of live secrets. Before publishing any future workflow export:
 
 - Every credential ID, Sheet ID, webhook URL, and instance ID in `workflow.json` should be replaced with a `YOUR_...` placeholder — no OAuth tokens, API keys, or real IDs should be committed.
 - All names, emails, and feedback in the screenshots and sample data are fabricated.
