@@ -146,7 +146,7 @@ The system uses **one spreadsheet with four tabs**. Column order below matches t
 | E | What did you like most about Alladi? |
 | F | What could we improve? |
 
-This tab is written by Google Forms and read by the n8n trigger. Headers are the exact question text — that's why the workflow placeholders (`YOUR_RATING_FORM_FIELD`, etc.) must match your questions word-for-word.
+This tab is written by Google Forms and read by the n8n trigger. Headers are the exact question text, so the imported workflow must reference the same question wording. The included public workflow uses the clean versions shown above without trailing spaces.
 
 ### Tab 2 — `Positive Feedback` (rating ≥ 4, AI-analyzed)
 
@@ -176,7 +176,7 @@ Built by the Apps Script. Combines both feedback tabs, sorts by rating (most urg
 - **Averages** — overall average rating, lowest, highest
 - **Color key** + the full detail table (`Name · Email · Rating · Sentiment · Problem · Solution · Risk Level · Priority`)
 
-> **Column-order note:** the AI prompt and the n8n Code node emit fields in the order `Name · Email · Rating · Sentiment · Priority · Problem · Solution · Risk Level`. The Google Sheets "Append" nodes map by **header name**, not position, so each value lands in the correct column regardless of order — which is why the physical sheet shows `Priority` in the last column while the AI output lists it earlier. Both are correct; nothing needs reordering.
+> **Column-order note:** the Code node extracts `Priority` before `Problem`, but the Google Sheets Append nodes map by **header name**, not by physical column position. That means the public workflow still writes values into the correct sheet columns shown above.
 
 ---
 
@@ -248,8 +248,8 @@ The workflow ships with placeholders instead of real values. Swap them in:
 | `YOUR_GOOGLE_SHEETS_TRIGGER_CREDENTIAL_ID` | Google account connected via n8n credentials |
 | `YOUR_GOOGLE_SHEETS_CREDENTIAL_ID` | Same Google account, used by the write/append nodes |
 | `YOUR_MISTRAL_CREDENTIAL_ID` | Your Mistral API key credential |
-| `YOUR_RATING_FORM_FIELD` | Exact column name of the rating question |
-| `YOUR_EMAIL_FORM_FIELD` | Exact column name of the email field |
+| `YOUR_RATING_FORM_FIELD` | Exact column name of the rating question, for example `How would you rate your experience with Alladi?` |
+| `YOUR_EMAIL_FORM_FIELD` | Exact column name of the email field, for example `What is your email?` |
 | `YOUR_LIKED_FORM_FIELD` | Exact column name of the "what did you like" field |
 | `YOUR_IMPROVE_FORM_FIELD` | Exact column name of the "what could improve" field |
 | `YOUR_N8N_INSTANCE_ID` | Filled in automatically by your own n8n instance |
